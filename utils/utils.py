@@ -19,7 +19,7 @@ TAB_TITLES = {
     "nw_role": "Governance わさびたこ焼き🐙",
     "sort_services": "Time Travel シューティング🔫",
     "real_wanage": "Query 輪投げ➰️",
-    "q1_kodama": "Q1 - Test",
+    "q1_test": "Q1 - Test",
 }
 
 
