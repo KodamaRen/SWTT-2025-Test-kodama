@@ -19,6 +19,7 @@ TAB_TITLES = {
     "nw_role": "Governance わさびたこ焼き🐙",
     "sort_services": "Time Travel シューティング🔫",
     "real_wanage": "Query 輪投げ➰️",
+    "q1_kodama": "Q1 - Test",
 }
 
 
@@ -50,6 +51,7 @@ TEAMS = {
     "Validate": "VARCHAR",
     "WAREHOUSE": "WAREHOUSE",
     "X-Small": "XS",
+    "Kodama": "KODAMA",
 }
 
 
