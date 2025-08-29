@@ -20,6 +20,8 @@ TAB_TITLES = {
     "sort_services": "Time Travel シューティング🔫",
     "real_wanage": "Query 輪投げ➰️",
     "q1_test": "Q1 - Test",
+    "q2_test": "Q2 - Test",
+    "q3_test": "Q3 - Test",
 }
 
 
