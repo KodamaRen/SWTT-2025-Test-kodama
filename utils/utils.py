@@ -22,6 +22,7 @@ TAB_TITLES = {
     "q1_test": "Q1 - Test",
     "q2_test": "Q2 - Test",
     "q3_test": "Q3 - Test",
+    "q4_test": "Q4 - Test",
 }
 
 
