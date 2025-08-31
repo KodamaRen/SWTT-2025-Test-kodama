@@ -4,37 +4,45 @@ from snowflake.snowpark import Session
 
 from utils.utils import save_table, init_state, clear_submit_button
 from utils.attempt_limiter import check_is_failed, init_attempt, process_exceeded_limit
-from utils.designs import header_animation, display_problem_statement
+from utils.designs import header_animation, display_problem_statement_swt25
 
 MAX_ATTEMPTS_MAIN = 3
 
 
 def present_quiz(tab_name: str, max_attempts: int) -> str:
     header_animation()
-    st.header("Q2 - Test", divider="rainbow")
+    st.header(":red[不規則の鬼] 〜法則の呼吸〜", divider="red")
 
-    st.write("Question 2: 次の法則に当てはまるアイコンはどれ？")
+    display_problem_statement_swt25(
+    """
+    <i>"法則は隠された真実への道標。
+    その規則性を見抜き、正しい選択をすることで道は開かれる。"</i><br/><br/>
+
+    Snowflakeのアイコンに隠された法則性。<br/>
+    その規則を見抜き、失われた真実を取り戻せ。
+    """
+    )
     st.write(f"回答回数の上限は {max_attempts}回です。")
 
     # 画像ファイルのパス
     image_paths_q = [
-        "pages/normal_problems/resources/q2_test/q2_icon_01.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_02.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_13.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_03.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_04.png"
+        "pages/normal_problems/resources/q2_test/q2_01.png",
+        "pages/normal_problems/resources/q2_test/q2_02.png",
+        "pages/normal_problems/resources/q2_test/q2_13.png",
+        "pages/normal_problems/resources/q2_test/q2_03.png",
+        "pages/normal_problems/resources/q2_test/q2_04.png"
     ]
 
     # 画像ファイルのパス
     image_paths_a = [
-        "pages/normal_problems/resources/q2_test/q2_icon_05.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_06.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_07.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_08.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_09.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_10.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_11.png",
-        "pages/normal_problems/resources/q2_test/q2_icon_12.png"
+        "pages/normal_problems/resources/q2_test/q2_05.png",
+        "pages/normal_problems/resources/q2_test/q2_06.png",
+        "pages/normal_problems/resources/q2_test/q2_07.png",
+        "pages/normal_problems/resources/q2_test/q2_08.png",
+        "pages/normal_problems/resources/q2_test/q2_09.png",
+        "pages/normal_problems/resources/q2_test/q2_10.png",
+        "pages/normal_problems/resources/q2_test/q2_11.png",
+        "pages/normal_problems/resources/q2_test/q2_12.png"
     ]
 
     # 1行×5列で画像を表示

@@ -160,6 +160,32 @@ def display_problem_statement(
         """
     )
 
+def display_problem_statement_swt25(
+    html_message: str,
+    css_name: str = DEFAULT_PROBLEM_STATEMENT_AREA
+):
+    
+    st.html(
+        f"""
+        <p>
+            <div class="{css_name}">
+            {html_message}
+            </div>
+            <style>
+            .{css_name} .box {{
+                border-radius: 10px;
+            }}
+            .{css_name} {{
+                background-color: rgba(128, 128, 128, 0.5);
+                background-position: top;
+                padding: 40px 5%;
+                color: #ffffff;
+            }}
+            </style>
+        </p>
+        """
+    )
+
 
 @st.cache_data
 def background_image(

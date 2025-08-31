@@ -4,29 +4,37 @@ from snowflake.snowpark import Session
 
 from utils.utils import save_table, init_state, clear_submit_button
 from utils.attempt_limiter import check_is_failed, init_attempt, process_exceeded_limit
-from utils.designs import header_animation, display_problem_statement
+from utils.designs import header_animation, display_problem_statement_swt25
 
 MAX_ATTEMPTS_MAIN = 3
 
 
 def present_quiz(tab_name: str, max_attempts: int) -> list:
     header_animation()
-    st.header("Q3 - Test", divider="rainbow")
+    st.header(":red[混迷の鬼] 〜判別の呼吸〜", divider="red")
 
-    st.write("Question 3: 以下の中で、実際にSnowflake MarketPlaceで提供されているデータはどれ？")
-    st.write(f"回答回数の上限は {max_attempts}回です。")
+    display_problem_statement_swt25(
+    """
+    <i>"混沌たる情報の海に、真の宝は埋もれている。
+    その本質を見抜き、宝を手にする術を会得せよ。"</i><br/><br/>
+
+    数あるデータの中から、Snowflake Marketplaceで提供されているデータはどれか。<br/>
+    """
+    )
+    
+    st.write(f"**討伐回数制限**: {max_attempts}回まで")
 
     options = [
         "飲食店の出店情報",
         "国勢調査情報 xxxx年",
         "株価・・・",
-        "天気情報（xx Kmメッシュ）",
+        "天気情報（xx kmメッシュ）",
         "・・・"
     ]
     
     selected_options = []
     
-    st.write("### 該当するものをすべて選択してください:")
+    st.write("#### 該当するものをすべて選択してください:")
     
     for i, option in enumerate(options):
         if st.checkbox(option, key=f"{tab_name}_option_{i}"):

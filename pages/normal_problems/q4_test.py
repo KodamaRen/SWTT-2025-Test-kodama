@@ -4,16 +4,24 @@ from snowflake.snowpark import Session
 
 from utils.utils import save_table, init_state, clear_submit_button
 from utils.attempt_limiter import check_is_failed, init_attempt, process_exceeded_limit
-from utils.designs import header_animation, display_problem_statement
+from utils.designs import header_animation, display_problem_statement_swt25
 
 MAX_ATTEMPTS_MAIN = 3
 
 
 def present_quiz(tab_name: str, max_attempts: int) -> list:
     header_animation()
-    st.header("Q4 - Test", divider="rainbow")
+    st.header(":red[真偽の鬼] 〜見極めの呼吸〜", divider="red")
 
-    st.write("Question 4: 以下は、Snowflakeにおける機能やサービスの例です。")
+    display_problem_statement_swt25(
+    """
+    <i>"真と偽、存在と不在。
+    その境界線を見極めることが、道を切り開く鍵となる。"</i><br/><br/>
+
+    Snowflakeの機能とサービスが、一定の法則で分けられている。<br/>
+    それぞれの存在を正しく見分け、真実を見極めよ。
+    """
+    )
     st.write("まず、以下の例を見てください:")
     
     col1, col2 = st.columns([1, 1])
@@ -43,6 +51,8 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
             </ul>
         </div>
         """, unsafe_allow_html=True)
+
+    st.write("---")
     
     st.write("##### 以下の項目について「ある」「なし」のどちらに属するか選んでください:")
     st.write(f"回答回数の上限は {max_attempts}回です。")
@@ -62,8 +72,6 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
             st.session_state.selected_options[option] = None
 
     selected_options = []
-
-    st.write("#### 各サービスについて「ある」「なし」を選択してください")
 
     for option in options:
         cols = st.columns([1, 2, 1, 1])
