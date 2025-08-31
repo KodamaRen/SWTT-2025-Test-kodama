@@ -19,25 +19,26 @@ def apply_default_custom_css():
         ."""
         + DEFAULT_TOP_TEXT_AREA
         + """ {
-            background-color: #1e1e1e;  /* ダーク背景 */
+            background-color: #2b1810;
             padding: 20px;
             border-radius: 10px;
-            border: 2px solid #11567F;  /* グレーのボーダー */
-            border-left: 5px solid #29B5E8;  /* Snowflake色のサイドライン */
-            color: #ffffff;  /* 白文字 */
+            border: 2px solid #8b0000;
+            border-left: 5px solid #ff4500;
+            color: #ffffff;
             font-size: 16px;
             line-height: 1.6;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);  /* 炎のような光彩効果 */
         }
         ."""
         + DEFAULT_TOP_TEXT_AREA
         + """ h3 {
-            color: #5cc5eb;  /* 淡いSnowflake色 */
-            text-shadow: 2px 2px #000000;  /* 影を付けて浮き上がる効果 */
+            color: #ffa07a;  /* 明るい橙色 */
+            text-shadow: 2px 2px 4px rgba(139, 0, 0, 0.8);  /* 赤い影効果 */
         }
         ."""
         + DEFAULT_TOP_TEXT_AREA
         + """ strong {
-            color: #5cc5eb;  /* 強調部分も淡いSnowflake色に */
+            color: #ffffff;  /* 白い炎 */
         }
         ."""
         + DEFAULT_TOP_TEXT_AREA
@@ -70,7 +71,7 @@ def display_applied_message(message: str, css_name: str = DEFAULT_TOP_TEXT_AREA)
 @st.cache_data
 def header_animation(
     css_name: str = DEFAULT_HEADER_ANIMATION_AREA,
-    image_file: str = "pages/common/images/sky.png",
+    image_file: str = "pages/common/images/background.png",
 ) -> None:
     import base64
 
@@ -79,45 +80,48 @@ def header_animation(
     st.html(
         f"""
         <div class="{css_name}">
+            {"".join(['<div class="fireball"></div>' for _ in range(20)])}
         </div>
         <style>
         .{css_name} {{
-            position:relative;
-            overflow:hidden;
-            box-shadow:0 4px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(0, 64, 128, 0.8);
             background-image: url(data:image/{"png"};base64,{encoded_string});
-            margin:0 auto;
-            width:300px;
-            height:30px;
             margin: 0 calc(50% - 50vw);
             width: 100vw;
+            height: 30px;
         }}
-        .{css_name}::before,
-        .{css_name}::after {{
-            position:absolute;
-            left:-50%;
-            width:200%;
-            height:200%;
-            content:"";
-            background-color:#1e50a2;
-            animation:wave linear 6s infinite;
+        .fireball {{
+            position: absolute;
+            background: radial-gradient(circle at center, #ff6600, #ff4500);
+            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            opacity: 0.9;
+            box-shadow: 0 0 10px #ff4500, 0 0 20px #ff6600;
+            animation: float 3s ease-in-out infinite;
         }}
-        .{css_name}::before {{
-            top:-150%;
-            border-radius:50% 50% / 50% 70%;
-        }}
-        .{css_name}::after {{
-            top:-146%;
-            border-radius:30% 70% / 30% 50%;
-            opacity:0.2;
-            animation-delay:0.4s;
-        }}
-        @keyframes wave {{
-            from {{
-                transform:rotate(0deg);
+        {" ".join([f'''
+        .fireball:nth-child({i+1}) {{
+            left: {5 * i}%;
+            animation-delay: {0.15 * i}s;
+        }}''' for i in range(20)])}
+        @keyframes float {{
+            0% {{
+                bottom: -20px;
+                transform: scale(1);
+                filter: brightness(1);
             }}
-            to {{
-                transform:rotate(360deg);
+            50% {{
+                bottom: 20px;
+                transform: scale(1.3);
+                filter: brightness(1.2);
+            }}
+            100% {{
+                bottom: -20px;
+                transform: scale(1);
+                filter: brightness(1);
             }}
         }}
         </style>

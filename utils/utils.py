@@ -64,7 +64,7 @@ def create_session(team_id: str, is_info: bool = True) -> Session:
         session.sql("SELECT 1").collect()
         print("セッションの作成に成功しました。")
         if is_info:
-            st.success("データクリスタルとのリンクに成功したぞ。次なる試練へ進むのだ！")
+            st.success("鬼との戦いの準備は整った！いざ、決戦の地へ！")
         return session
 
     except SnowparkSQLException as e:
@@ -75,20 +75,20 @@ def create_session(team_id: str, is_info: bool = True) -> Session:
         session.sql("SELECT 1").collect()
         print("セッションの再作成に成功しました。")
         if is_info:
-            st.success("データクリスタルとのリンクに成功したぞ。次なる試練へ進むのだ！")
+            st.success("鬼との戦いの準備は整った！いざ、決戦の地へ！")
         return session
 
     except Exception as e:
         if is_info:
-            st.error("ふむ、、なにか問題が発生したようだな")
+            st.error("複雑空城の結界が強固すぎる...！なにか問題が発生したようだ。")
             print(e)
             st.stop()
 
 
 def get_session():
     if "snow_session" not in st.session_state:
-        st.warning("そなたらは、まだチームとして誓いが結ばれていないようだの・・・。")
-        if st.button("チーム結集に戻る"):
+        st.warning("そなたらは、まだ討伐隊として誓いが結ばれていないようだの・・・。")
+        if st.button("討伐隊の結成に戻る"):
             st.switch_page("app.py")
         st.stop()
     else:
@@ -98,10 +98,10 @@ def get_session():
 
 def display_page_titles_sidebar():
     with st.sidebar:
-        st.page_link("app.py", label="Gather Teams", icon="👥")
-        st.page_link("pages/01_normal_problems.py", label="Challenge Arena", icon="⚔️")
+        st.page_link("app.py", label="討伐隊の結成", icon="🤝")
+        st.page_link("pages/01_normal_problems.py", label="柱の試練", icon="⚔️")
         st.page_link(
-            "pages/03_aggregate_results.py", label="Overall Progress", icon="📊"
+            "pages/03_aggregate_results.py", label="鬼討伐進捗の帳", icon="📜"
         )
 
 
@@ -110,21 +110,21 @@ def display_team_id_sidebar():
         try:
             st.divider()
             if "team_id" in st.session_state:
-                st.write(f"チーム名: {st.session_state.team_id}")
+                st.write(f"討伐隊名: {st.session_state.team_id}")
             else:
-                st.write(f"チーム名: 未結成")
+                st.write(f"討伐隊名: 未結成")
         except AttributeError as e:
             print(e)
 
 
 def display_team_id():
-    st.write(f"そなたらのチームは 「**{st.session_state.team_id}**」 だ。")
+    st.write(f"そなたらの討伐隊は 「**{st.session_state.team_id}**」 だ。")
 
 
 def get_team_id():
     if "team_id" not in st.session_state:
-        st.warning("そなたらは、まだチームとして誓いが結ばれていないようだの・・・。")
-        if st.button("チーム結集に戻る"):
+        st.warning("そなたらは、まだ討伐隊として誓いが結ばれていないようだの・・・。")
+        if st.button("討伐隊の結成に戻る"):
             st.switch_page("app.py")
         st.stop()
     else:
@@ -169,7 +169,7 @@ def save_table(state: dict, session: Session):
         ],
     )
 
-    with st.spinner("クリスタルと通信中..."):
+    with st.spinner("鬼と激闘中..."):
         # session.write_pandas(df, "SUBMIT2", auto_create_table=False, overwrite=False)
         snow_df = session.create_dataframe(df)
         snow_df.write.mode("append").save_as_table("submit2")
@@ -251,10 +251,10 @@ def reset_problem_status() -> None:
 def clear_submit_button(placeholder, state):
     if st.session_state[f"{state['problem_id']}_{state['team_id']}_is_clear"]:
         placeholder.empty()
-        placeholder.success("そなたらはすでにクリスタルのパワーを取り戻している！")
+        placeholder.success("そなたらはすでにこの鬼を討伐している！")
     elif st.session_state[f"{state['problem_id']}_{state['team_id']}_is_failed"]:
         placeholder.empty()
-        placeholder.error("そなたらはクリスタルのパワーを使い切ってしまったようだ。")
+        placeholder.error("そなたらは敗北してしまったようだ。呼吸の力が尽きてしまった...")
 
 
 def string_to_hash_int(base_string: str) -> int:

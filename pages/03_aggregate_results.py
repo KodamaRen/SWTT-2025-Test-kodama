@@ -22,7 +22,7 @@ CLEAR_COUNT = 12
 is_display_ranking = False
 num_display_ranking = 3
 
-st.title("📊挑戦状況")
+st.title("📜鬼討伐進捗の帳")
 background_image("pages/common/images/library.png")
 display_page_titles_sidebar()
 display_team_id_sidebar()
@@ -32,7 +32,7 @@ with st.sidebar:
     display_on_pc = st.toggle("文字サイズ：大")
 
 css_name = apply_default_custom_css()
-message = "ここでは、現在の各チームの挑戦状況を確認できるぞ。\n\nそなたらもどんどん挑戦して進むのだ！"
+message = "ここでは、現在の各討伐隊の挑戦状況を確認できるぞ。\n\nそなたらもどんどん挑戦して進むのだ！"
 display_applied_message(message, css_name)
 st.write("")
 
@@ -59,7 +59,7 @@ for problem_id in problem_ids:
         st.session_state[f"{problem_id}_is_over_clear"] = False
 
 
-st.subheader("問題ごとの正解チーム数")
+st.subheader("問題ごとの鬼討伐隊数")
 chart_placeholder = st.empty()
 
 
@@ -100,7 +100,7 @@ def update_chart():
         y="IS_CLEAR",
         color="color",
         color_discrete_map="identity",
-        labels={"problem_name": "", "IS_CLEAR": "正解チーム数"},
+        labels={"problem_name": "", "IS_CLEAR": "鬼討伐隊数"},
         category_orders={"problem_name": pdf_problem_ids["problem_name"].tolist()},
     )
 

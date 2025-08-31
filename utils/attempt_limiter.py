@@ -123,7 +123,7 @@ def process_exceeded_limit(placeholder, state):
 
     # 回答制限に到達した際に、その回答がクリアだったかどうかで表示する内容を調整する。
     if st.session_state[f"{state['problem_id']}_{state['team_id']}_is_clear"]:
-        placeholder.success("そなたらはクリスタルのパワーを取り戻すことができた！")
+        placeholder.success("そなたは鬼を討伐することができた！")
 
     else:
-        placeholder.error("そなたらはクリスタルのパワーを使い切ってしまったようだ。")
+        placeholder.error("そなたは力尽きてしまったようだ...。")

@@ -25,7 +25,7 @@ from utils.attempt_limiter import check_is_failed, update_failed_status
 
 display_page_titles_sidebar()
 
-st.title("⚔️挑戦の場")
+st.title("⚔️柱の試練")
 background_image("pages/common/images/wars.png")
 
 team_id = get_team_id()
@@ -34,9 +34,9 @@ if f"{team_id}_display_preparation_message" not in st.session_state:
 
 css_name = apply_default_custom_css()
 message = f"""
-    ほう、そなたらがかの **{team_id}** チームか。
+    ほう、そなたらがかの **{team_id}** の者たちか。
 
-    さあ、8つの知恵の的屋に挑戦し、クリスタルの力を取り戻すのだ
+    己の技を磨き、六つの「Snowflakeの呼吸」を習得し、鬼を討伐せよ！
     """
 display_applied_message(message, css_name)
 
@@ -129,7 +129,7 @@ for i, problem_id in enumerate(tabs.keys()):
 
 success_placeholder = st.empty()
 if st.session_state[f"{team_id}_display_preparation_message"]:
-    success_placeholder.success("挑戦する準備が整ったようだ。")
+    success_placeholder.success("戦いの準備が整ったようだ。")
     st.session_state[f"{team_id}_display_preparation_message"] = False
 else:
     success_placeholder.empty()
@@ -153,7 +153,7 @@ def update_selected_index():
 
 
 selected_problem = st.selectbox(
-    "挑戦する問題を選択してください",
+    "討伐する鬼を選択してください",
     options=tab_titles,
     index=st.session_state[selected_index_state_name],
     on_change=update_selected_index,

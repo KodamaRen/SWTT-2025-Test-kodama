@@ -17,33 +17,30 @@ from utils.designs import (
 display_page_titles_sidebar()
 
 
-st.title("💎データクリスタルの挑戦")
+st.title("🏯複雑空城、決戦の時")
 display_team_id_sidebar()
 
 css_name = apply_default_custom_css()
-message = f"""
-    長きにわたり、世界の繁栄と秩序を支え続けてきた「データクリスタル」。
+message = """
+*部門ごとに分断されたデータ、その場凌ぎの改修、無秩序に散在したデータ*
 
-    このクリスタルは、人々に知恵を授け、世界の未来を照らし続けています。  
+これらの混沌が重なり合い、突如として現れた異形の迷宮「複雑空城」
 
-    **今宵、あなたとチームはこの神秘的な祭典に参加し、クリスタルの力を解き放つ試練に挑むのです。**
+この城で暴走する鬼たちにより、世界中のデータ基盤が崩壊の危機にある。
 
-    8つの知恵の的屋を攻略し、世界の未来を切り拓け。
+—— しかし、まだ希望は残されている。
 
-    選ばれし者たちよ、運命はあなたの手に託されています。  
+データの世界で磨き上げた「Snowflakeの呼吸」を駆使して、鬼たちを討伐せよ。
 
-    <br>
-
-    **さあ、共にこの旅を始めましょう。そのためにもまずは、チームを結成するのです。**
-
-    """
+選ばれし柱たちよ、立ち上がれ。
+"""
 
 display_applied_message(message, css_name)
 background_image("pages/common/images/sky.png", dark_mode=False)
 
 st.write("")
 team_id = st.selectbox(
-    label="結成するチームを選択",
+    label="結成する討伐隊を選択",
     options=list(TEAMS.keys()),
 )
 
@@ -52,6 +49,6 @@ if team_id:
     st.session_state.team_id = team_id
     st.session_state.snow_session = create_session(TEAMS[team_id])
 
-    if st.button("挑戦を開始する"):
+    if st.button("戦場へ進む"):
         print(st.session_state)
         st.switch_page("pages/01_normal_problems.py")
