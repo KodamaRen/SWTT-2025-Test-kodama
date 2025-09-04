@@ -7,7 +7,6 @@ import snowflake.snowpark.functions as F
 from snowflake.snowpark import Session
 from snowflake.snowpark.exceptions import SnowparkSQLException
 
-from utils.attempt_limiter import check_is_failed, update_failed_status
 
 
 TAB_TITLES = {
@@ -15,8 +14,8 @@ TAB_TITLES = {
     "q2_test": "🧩不規則の鬼 ~ 法則の呼吸 ~",
     "q3_test": "🧭混迷の鬼 ~ 判別の呼吸 ~",
     "q4_test": "🔍️真偽の鬼 ~ 見極めの呼吸 ~",
-    "q5_test": "🌊波紋の鬼 ~ コミュニティの呼吸 ~",
-    "q6_test": "📊分析の鬼 ~ データ分析の呼吸 ~",
+    "q5_test": "⚡️疾風の鬼 ~ Streamlitの呼吸 ~",
+    "q6_test": "🌊波紋の鬼 ~ コミュニティの呼吸 ~",
 }
 
 DEMON_NAME = {
@@ -24,40 +23,38 @@ DEMON_NAME = {
     "q2_test": "不規則の鬼",
     "q3_test": "混迷の鬼",
     "q4_test": "真偽の鬼",
-    "q5_test": "波紋の鬼",
-    "q6_test": "分析の鬼",
+    "q5_test": "疾風の鬼",
+    "q6_test": "波紋の鬼",
 }
 
 # Key: 表示されるチーム名
 # Value: secretsに記載されているチームID
 TEAMS = {
     "": "",
-    "Kodama": "KODAMA",
-    "hiyama_test": "hiyama_test",
-    "一月上旬生まれ": "Jan_First",
-    "一月下旬生まれ": "Jan_Second",
-    "二月上旬生まれ": "Feb_First",
-    "二月下旬生まれ": "Feb_Second",
-    "三月上旬生まれ": "Mar_First",
-    "三月下旬生まれ": "Mar_Second",
-    "四月上旬生まれ": "Apr_First",
-    "四月下旬生まれ": "Apr_Second",
-    "五月上旬生まれ": "May_First",
-    "五月下旬生まれ": "May_Second",
-    "六月上旬生まれ": "Jun_First",
-    "六月下旬生まれ": "Jun_Second",
-    "七月上旬生まれ": "Jul_First",
-    "七月下旬生まれ": "Jul_Second",
-    "八月上旬生まれ": "Aug_First",
-    "八月下旬生まれ": "Aug_Second",
-    "九月上旬生まれ": "Sep_First",
-    "九月下旬生まれ": "Sep_Second",
-    "十月上旬生まれ": "Oct_First",
-    "十月下旬生まれ": "Oct_Second",
-    "十一月上旬生まれ": "Nov_First",
-    "十一月下旬生まれ": "Nov_Second",
-    "十二月上旬生まれ": "Dec_First",
-    "十二月下旬生まれ": "Dec_Second",
+    "一月上旬": "Jan_First",
+    "一月下旬": "Jan_Second",
+    "二月上旬": "Feb_First",
+    "二月下旬": "Feb_Second",
+    "三月上旬": "Mar_First",
+    "三月下旬": "Mar_Second",
+    "四月上旬": "Apr_First",
+    "四月下旬": "Apr_Second",
+    "五月上旬": "May_First",
+    "五月下旬": "May_Second",
+    "六月上旬": "Jun_First",
+    "六月下旬": "Jun_Second",
+    "七月上旬": "Jul_First",
+    "七月下旬": "Jul_Second",
+    "八月上旬": "Aug_First",
+    "八月下旬": "Aug_Second",
+    "九月上旬": "Sep_First",
+    "九月下旬": "Sep_Second",
+    "十月上旬": "Oct_First",
+    "十月下旬": "Oct_Second",
+    "十一月上旬": "Nov_First",
+    "十一月下旬": "Nov_Second",
+    "十二月上旬": "Dec_First",
+    "十二月下旬": "Dec_Second",
 }
 
 
@@ -151,7 +148,7 @@ def get_team_id():
         return st.session_state.team_id
 
 
-def init_state(tab_name: str, session: Session, max_attempts: int = 3):
+def init_state(tab_name: str, session: Session):
     state_name = f"{tab_name}_state"
     if state_name not in st.session_state:
         st.session_state.state = {}
@@ -162,7 +159,7 @@ def init_state(tab_name: str, session: Session, max_attempts: int = 3):
     state["problem_id"] = tab_name
 
     state["is_clear"] = check_is_clear(session, state)
-    state["max_attempts"] = max_attempts
+    state["max_attempts"] = None  # 制限撤廃のためNullを設定
 
     return state
 
@@ -212,26 +209,6 @@ def save_table(state: dict, session: Session):
 
                 st.rerun()
 
-        else:
-            update_failed_status(session, state)
-            # 制限に到達している かつ クリアしていない 場合、if文内のロジックを実行する。
-            if (
-                check_is_failed(session, state)
-                and not st.session_state[
-                    f"{state['problem_id']}_{state['team_id']}_is_clear"
-                ]
-            ):
-                st.session_state[f"{state['problem_id']}_{state['team_id']}_title"] = (
-                    "❌️ "
-                    + st.session_state[
-                        f"{state['problem_id']}_{state['team_id']}_title"
-                    ]
-                )
-                st.session_state[
-                    f"{state['problem_id']}_{state['team_id']}_is_failed"
-                ] = True
-
-                st.rerun()
 
 
 def update_clear_status(session: Session, state: dict) -> None:
@@ -272,9 +249,6 @@ def clear_submit_button(placeholder, state):
     if st.session_state[f"{state['problem_id']}_{state['team_id']}_is_clear"]:
         placeholder.empty()
         placeholder.success("そなたらはすでにこの鬼を討伐している！")
-    elif st.session_state[f"{state['problem_id']}_{state['team_id']}_is_failed"]:
-        placeholder.empty()
-        placeholder.error("そなたらは敗北してしまったようだ。呼吸の力が尽きてしまった...")
 
 
 def string_to_hash_int(base_string: str) -> int:

@@ -21,7 +21,6 @@ from utils.designs import (
     background_image,
     display_demon_message_html
 )
-from utils.attempt_limiter import check_is_failed, update_failed_status
 
 # with Profiler():  # 性能調査をする場合はコメントアウトを外して下記コードをすべてインデント下げる。
 
@@ -72,7 +71,6 @@ for i, problem_id in enumerate(tabs.keys()):
             f"{state['problem_id']}_{state['team_id']}_is_init_updated"
         ] = True
         update_clear_status(session, state)
-        update_failed_status(session, state)
 
     # タブ名、タブステートの初期化
     if f"{state['problem_id']}_{state['team_id']}_title" not in st.session_state:
@@ -83,23 +81,9 @@ for i, problem_id in enumerate(tabs.keys()):
             st.session_state[f"{state['problem_id']}_{state['team_id']}_is_clear"] = (
                 True
             )
-            st.session_state[f"{state['problem_id']}_{state['team_id']}_is_failed"] = (
-                False
-            )
-        elif check_is_failed(session, state):
-            checker = "❌️ "
-            st.session_state[f"{state['problem_id']}_{state['team_id']}_is_clear"] = (
-                False
-            )
-            st.session_state[f"{state['problem_id']}_{state['team_id']}_is_failed"] = (
-                True
-            )
         else:
             checker = ""
             st.session_state[f"{state['problem_id']}_{state['team_id']}_is_clear"] = (
-                False
-            )
-            st.session_state[f"{state['problem_id']}_{state['team_id']}_is_failed"] = (
                 False
             )
 
