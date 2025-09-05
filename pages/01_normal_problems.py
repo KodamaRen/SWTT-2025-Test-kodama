@@ -32,14 +32,6 @@ team_id = get_team_id()
 if f"{team_id}_display_preparation_message" not in st.session_state:
     st.session_state[f"{team_id}_display_preparation_message"] = True
 
-css_name = apply_default_custom_css()
-message = f"""
-    ほう、そなたらがかの **{team_id}** の者たちか。
-
-    己の技を磨き、六つの「Snowflakeの呼吸」を習得し、鬼を討伐せよ！
-    """
-display_applied_message(message, css_name)
-
 st.write("")
 
 session = get_session()
@@ -159,6 +151,21 @@ selected_problem = st.selectbox(
     on_change=update_selected_index,
     key=f"{team_id}_selected_problem",
 )
+
+css_name = apply_default_custom_css()
+message = f"""
+    ほう、そなたらがかの **{team_id}** の者たちか。
+
+    己の技を磨き、六つの「Snowflakeの呼吸」を習得し、鬼を討伐せよ！
+    """
+display_applied_message(message, css_name)
+display_applied_message(
+    message,
+    css_name=css_name,
+    avatar_image="pages/common/images/demons/demon1.png",
+    avatar_size=72
+)
+
 
 selected_problem_id = problem_ids[tab_titles.index(selected_problem)]
 
