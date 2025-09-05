@@ -16,14 +16,11 @@ def apply_default_custom_css():
         h1, h2, div, p {{
             font-family: "Zen Antique", serif !important;
         }}
-
         .{DEFAULT_TOP_TEXT_AREA} {{
             background-color: #2b1810;
             padding: 20px;
             border-radius: 10px;
-            border: 2px solid #8b0000;
-            border-left: 5px solid #ff4500;
-            color: #ffffff;
+	@@ -27,87 +28,45 @@ def apply_default_custom_css():
             font-size: 16px;
             line-height: 1.6;
             box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);  /* 炎のような光彩効果 */
@@ -38,7 +35,6 @@ def apply_default_custom_css():
         .{DEFAULT_TOP_TEXT_AREA} p:last-child {{
             margin-bottom: 0;
         }}
-
         /* ===== アバター＋吹き出しの横並び用（追加） ===== */
         .msg-row {{
             display: flex;
@@ -46,7 +42,6 @@ def apply_default_custom_css():
             gap: 12px;
             margin: 0.5rem 0;
         }}
-
         .msg-row .avatar {{
             width: var(--avatar-size, 64px);
             height: var(--avatar-size, 64px);
@@ -57,12 +52,10 @@ def apply_default_custom_css():
             box-shadow: 0 0 8px rgba(255,69,0,.2);
             flex: 0 0 auto;
         }}
-
         .msg-row .bubble {{
             flex: 1 1 auto;
             min-width: 0; 
         }}
-
         @media (max-width: 480px) {{
             .msg-row {{ gap: 8px; }}
         }}
