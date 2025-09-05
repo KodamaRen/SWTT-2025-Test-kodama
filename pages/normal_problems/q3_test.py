@@ -22,7 +22,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
     """
     )
     
-    st.write(f"**討伐回数制限**: {max_attempts}回まで")
+    # st.write(f"**討伐回数制限**: {max_attempts}回まで")
 
     options = [
         "飲食店の出店情報",

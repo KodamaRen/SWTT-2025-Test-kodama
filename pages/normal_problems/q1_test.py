@@ -23,7 +23,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
     """
     )
     
-    st.write(f"**討伐回数制限**: {max_attempts}回まで")
+    # st.write(f"**討伐回数制限**: {max_attempts}回まで")
 
     # 画像ファイルのパス
     image_paths = [

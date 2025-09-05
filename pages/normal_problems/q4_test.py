@@ -55,7 +55,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
     st.write("---")
     
     st.write("##### 以下の項目について「ある」「なし」のどちらに属するか選んでください:")
-    st.write(f"回答回数の上限は {max_attempts}回です。")
+    # st.write(f"回答回数の上限は {max_attempts}回です。")
 
     options = [
         "Snowpark Container Service",
