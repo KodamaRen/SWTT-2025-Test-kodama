@@ -13,11 +13,13 @@ from utils.utils import (
     get_session,
     get_team_id,
     TAB_TITLES,
+    DEMON_NAME,
 )
 from utils.designs import (
     apply_default_custom_css,
     display_applied_message,
     background_image,
+    display_demon_message_html
 )
 from utils.attempt_limiter import check_is_failed, update_failed_status
 
@@ -31,8 +33,6 @@ background_image("pages/common/images/wars.png")
 team_id = get_team_id()
 if f"{team_id}_display_preparation_message" not in st.session_state:
     st.session_state[f"{team_id}_display_preparation_message"] = True
-
-st.write("")
 
 session = get_session()
 display_team_id_sidebar()
@@ -145,22 +145,30 @@ def update_selected_index():
 
 
 selected_problem = st.selectbox(
-    "討伐する鬼を選択してください",
+    "討伐する鬼を選択するんだ！！",
     options=tab_titles,
     index=st.session_state[selected_index_state_name],
     on_change=update_selected_index,
     key=f"{team_id}_selected_problem",
 )
 
-css_name = apply_default_custom_css()
-message = f"""
-    ほう、そなたらがかの **{team_id}** の者たちか。
-
-    己の技を磨き、六つの「Snowflakeの呼吸」を習得し、鬼を討伐せよ！
-    """
-display_applied_message(message, css_name)
-
 selected_problem_id = problem_ids[tab_titles.index(selected_problem)]
+
+
+message = f"""
+お前らがあの <b>{team_id}</b> のものたちか。
+この『{DEMON_NAME[selected_problem_id]}』を倒せるものなら倒してみよ！！
+"""
+avatar_image_path = f"pages/common/images/demons/{DEMON_NAME[selected_problem_id]}.png"
+
+display_demon_message_html(
+    message,
+    avatar_image=avatar_image_path,
+    avatar_size=72,
+)
+
+st.write("")
+st.write("")
 
 tabs[selected_problem_id].run(selected_problem_id, session)
 
