@@ -22,7 +22,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
     その規則を見抜き、失われた真実を取り戻せ。
     """
     )
-    st.write(f"回答回数の上限は {max_attempts}回です。")
+    # st.write(f"回答回数の上限は {max_attempts}回です。")
 
     # 画像ファイルのパス
     image_paths_q = [
