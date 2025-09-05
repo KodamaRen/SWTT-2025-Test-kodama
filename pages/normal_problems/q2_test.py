@@ -3,26 +3,49 @@ import os
 from snowflake.snowpark import Session
 
 from utils.utils import save_table, init_state, clear_submit_button
-from utils.attempt_limiter import check_is_failed, init_attempt, process_exceeded_limit
 from utils.designs import header_animation, display_problem_statement_swt25
 
-MAX_ATTEMPTS_MAIN = 3
 
-
-def present_quiz(tab_name: str, max_attempts: int) -> str:
+def present_quiz(tab_name: str) -> str:
     header_animation()
     st.header(":red[不規則の鬼] 〜法則の呼吸〜", divider="red")
 
-    display_problem_statement_swt25(
-    """
-    <i>"法則は隠された真実への道標。
-    その規則性を見抜き、正しい選択をすることで道は開かれる。"</i><br/><br/>
+    # Problem statement and demon image side by side
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        display_problem_statement_swt25(
+        """
+        <i>"法則は隠された真実への道標。
+        その規則性を見抜き、正しい選択をすることで道は開かれる。"</i><br/><br/>
 
-    Snowflakeのアイコンに隠された法則性。<br/>
-    その規則を見抜き、失われた真実を取り戻せ。
-    """
-    )
-    st.write(f"回答回数の上限は {max_attempts}回です。")
+        Snowflakeのアイコンに隠された法則性。<br/>
+        その規則を見抜き、失われた真実を取り戻せ。
+        """
+        )
+    
+    with col2:
+        # Demon image display with vertical centering
+        demon_image_path = "pages/common/images/demons/demon2.jpg"
+        try:
+            # Use markdown with CSS for vertical centering
+            st.markdown(
+                """
+                <div style="display: flex; align-items: center; height: 100%; justify-content: center;">
+                """,
+                unsafe_allow_html=True
+            )
+            st.image(demon_image_path, caption="不規則の鬼", use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+        except Exception:
+            st.markdown(
+                """
+                <div style="display: flex; align-items: center; height: 100%; justify-content: center;">
+                    <p style="text-align: center;">📷 鬼の姿を撮影中...</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     # 画像ファイルのパス
     image_paths_q = [
@@ -45,12 +68,17 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
         "pages/normal_problems/resources/q2_test/q2_12.png"
     ]
 
-    # 1行×5列で画像を表示
-    cols = st.columns(5)
-    for col_idx, col in enumerate(cols):
-        with col:
-            if os.path.exists(image_paths_q[col_idx]):
-                st.image(image_paths_q[col_idx], width=100)
+    # 1行×9列で画像と矢印を表示（画像5つ、矢印4つ）
+    cols = st.columns(9)
+    for col_idx in range(9):
+        with cols[col_idx]:
+            if col_idx % 2 == 0:  # 偶数列に画像を表示
+                img_idx = col_idx // 2
+                if img_idx < len(image_paths_q):
+                    if os.path.exists(image_paths_q[img_idx]):
+                        st.image(image_paths_q[img_idx], width=100)
+            else:  # 奇数列に矢印を表示
+                st.markdown("<div style='text-align: center; font-size: 24px; line-height: 100px;'>→</div>", unsafe_allow_html=True)
 
     st.write("")  # Add space between containers
     
@@ -63,7 +91,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
                 with col:
                     st.write(f"{'①②③④⑤⑥⑦⑧'[img_idx]}")  # Updated to include ⑧
                     if os.path.exists(image_paths_a[img_idx]):
-                        st.image(image_paths_a[img_idx], width=100)
+                        st.image(image_paths_a[img_idx], width=80)
 
     # 選択ボックスを追加
     selected_number = st.selectbox(
@@ -87,23 +115,15 @@ def process_answer(answer: str, state, session: Session) -> None:
 
 
 def run(tab_name: str, session: Session):
-    state = init_state(tab_name, session, MAX_ATTEMPTS_MAIN)
-    main_attempt = init_attempt(
-        max_attempts=MAX_ATTEMPTS_MAIN, tab_name=tab_name, session=session, key="main"
-    )
+    state = init_state(tab_name, session)
 
-    answer = present_quiz(tab_name, MAX_ATTEMPTS_MAIN)
+    answer = present_quiz(tab_name)
 
     placeholder = st.empty()
-    if check_is_failed(session, state):
-        process_exceeded_limit(placeholder, state)
-    elif placeholder.button("回答する", key=f"{tab_name}_submit"):
-        if main_attempt.check_attempt():
-            if answer != "選択してください":
-                process_answer(answer, state, session)
-            else:
-                st.warning("番号を選択してください")
+    if placeholder.button("回答する", key=f"{tab_name}_submit"):
+        if answer != "選択してください":
+            process_answer(answer, state, session)
         else:
-            process_exceeded_limit(placeholder, state)
+            st.warning("番号を選択してください")
 
     clear_submit_button(placeholder, state)
