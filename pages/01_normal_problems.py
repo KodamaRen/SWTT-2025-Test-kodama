@@ -159,6 +159,13 @@ message = f"""
     己の技を磨き、六つの「Snowflakeの呼吸」を習得し、鬼を討伐せよ！
     """
 display_applied_message(message, css_name)
+display_applied_message(
+    message,
+    css_name=css_name,
+    avatar_image="pages/common/images/demons/demon1.png",
+    avatar_size=72
+)
+
 
 selected_problem_id = problem_ids[tab_titles.index(selected_problem)]
 
