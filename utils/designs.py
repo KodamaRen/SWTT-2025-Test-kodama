@@ -8,99 +8,62 @@ DEFAULT_PROBLEM_STATEMENT_AREA = "custom-problem-statement-area"
 
 def apply_default_custom_css():
     st.markdown(
-        f"""
+        """
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Zen+Antique&display=swap" rel="stylesheet">
         <style>
-        h1, h2, div, p {{
+        h1, h2, div, p {
             font-family: "Zen Antique", serif !important;
-        }}
-        .{DEFAULT_TOP_TEXT_AREA} {{
+        }
+        ."""
+        + DEFAULT_TOP_TEXT_AREA
+        + """ {
             background-color: #2b1810;
             padding: 20px;
             border-radius: 10px;
-	@@ -27,87 +28,45 @@ def apply_default_custom_css():
+	@@ -28,45 +27,87 @@ def apply_default_custom_css():
             font-size: 16px;
             line-height: 1.6;
             box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);  /* 炎のような光彩効果 */
-        }}
-        .{DEFAULT_TOP_TEXT_AREA} h3 {{
+        }
+        ."""
+        + DEFAULT_TOP_TEXT_AREA
+        + """ h3 {
             color: #ffa07a;  /* 明るい橙色 */
             text-shadow: 2px 2px 4px rgba(139, 0, 0, 0.8);  /* 赤い影効果 */
-        }}
-        .{DEFAULT_TOP_TEXT_AREA} strong {{
+        }
+        ."""
+        + DEFAULT_TOP_TEXT_AREA
+        + """ strong {
             color: #ffffff;  /* 白い炎 */
-        }}
-        .{DEFAULT_TOP_TEXT_AREA} p:last-child {{
+        }
+        ."""
+        + DEFAULT_TOP_TEXT_AREA
+        + """ p:last-child {
             margin-bottom: 0;
-        }}
-        /* ===== アバター＋吹き出しの横並び用（追加） ===== */
-        .msg-row {{
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin: 0.5rem 0;
-        }}
-        .msg-row .avatar {{
-            width: var(--avatar-size, 64px);
-            height: var(--avatar-size, 64px);
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            border-radius: 10px;      
-            border: 2px solid #8b0000;
-            box-shadow: 0 0 8px rgba(255,69,0,.2);
-            flex: 0 0 auto;
-        }}
-        .msg-row .bubble {{
-            flex: 1 1 auto;
-            min-width: 0; 
-        }}
-        @media (max-width: 480px) {{
-            .msg-row {{ gap: 8px; }}
-        }}
+        }
         </style>
         """,
         unsafe_allow_html=True,
     )
+
     return DEFAULT_TOP_TEXT_AREA
 
 
-def display_applied_message(
-    message: str,
-    css_name: str = DEFAULT_TOP_TEXT_AREA,
-    avatar_image: str | None = None,   # ← 追加: 左に置く画像（パス）
-    avatar_size: int = 64,             # ← 追加: 正方形サイズ(px)
-    avatar_alt: str = "avatar"         # ← 追加: alt
-):
-    # 既存CSSを適用
-    apply_default_custom_css()
-
-    # 画像の有無でHTMLを切り替え
-    if avatar_image:
-        import base64, mimetypes, os
-
-        mime = mimetypes.guess_type(avatar_image)[0] or "image/png"
-        with open(avatar_image, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode()
-
-        html = f"""
-        <div class="msg-row" style="--avatar-size:{avatar_size}px">
-          <img class="avatar" src="data:{mime};base64,{b64}" alt="{avatar_alt}" />
-          <div class="bubble {css_name}">
-            {message}
-          </div>
-        </div>
-        """
+def display_applied_message(message: str, css_name: str = DEFAULT_TOP_TEXT_AREA):
+    if css_name == DEFAULT_TOP_TEXT_AREA:
+        apply_default_custom_css()
     else:
-        # 従来表示（互換）
-        html = f"""
-        <div class="{css_name}">
-          {message}
-        </div>
-        """
+        apply_default_custom_css()
 
-    st.markdown(html, unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class='{css_name}'>
+        {message}
+        """,
+        unsafe_allow_html=True,
+    )
 
 @st.cache_data
 def header_animation(
