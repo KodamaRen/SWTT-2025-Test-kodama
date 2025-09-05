@@ -6,7 +6,7 @@ from utils.utils import save_table, init_state, clear_submit_button
 from utils.attempt_limiter import check_is_failed, init_attempt, process_exceeded_limit
 from utils.designs import header_animation, display_problem_statement_swt25
 
-MAX_ATTEMPTS_MAIN = 3
+MAX_ATTEMPTS_MAIN = 100
 
 
 def present_quiz(tab_name: str, max_attempts: int) -> str:
