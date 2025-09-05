@@ -22,6 +22,7 @@ TAB_TITLES = {
 # Value: secretsに記載されているチームID
 TEAMS = {
     "": "",
+    "Kodama": "KODAMA",
     "一月上旬生まれ": "Jan_First",
     "一月下旬生まれ": "Jan_Second",
     "二月上旬生まれ": "Feb_First",
