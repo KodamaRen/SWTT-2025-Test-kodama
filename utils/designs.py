@@ -231,3 +231,82 @@ def background_image(
     """,
         unsafe_allow_html=True,
     )
+
+
+DEFAULT_DEMON_ROW = "sf-demon-row"
+DEFAULT_DEMON_AVATAR = "sf-demon-avatar"
+DEFAULT_DEMON_BUBBLE = "sf-demon-bubble"
+
+def apply_demon_ui_css():
+    """鬼アバター用の最小CSS。既存のフォント指定を継承（font-familyは書かない）。"""
+    st.markdown(
+        """
+        <style>
+        .""" + DEFAULT_DEMON_ROW + """ {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: .5rem 0;
+        }
+        .""" + DEFAULT_DEMON_AVATAR + """ {
+            width: var(--avatar-size, 64px);
+            height: var(--avatar-size, 64px);
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 10px;     /* 丸にしたいときは 50% */
+            flex: 0 0 auto;
+        }
+        .""" + DEFAULT_DEMON_BUBBLE + """ {
+            flex: 1 1 auto;
+            min-width: 0;
+            background-color: #2b1810;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #8b0000;
+            border-left: 5px solid #ff4500;
+            color: #ffffff;
+            font-size: 16px;
+            line-height: 1.6;
+            box-shadow: 0 0 15px rgba(255,69,0,.3);
+        }
+        .""" + DEFAULT_DEMON_BUBBLE + """ p:last-child { margin-bottom: 0; }
+
+        @media (max-width: 480px) {
+            .""" + DEFAULT_DEMON_ROW + """ { gap: 8px; }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    return DEFAULT_DEMON_ROW
+
+def display_demon_message_html(
+    html_message,
+    avatar_image=None, 
+    avatar_size=64,
+    avatar_alt="avatar",
+):
+    apply_default_custom_css()
+    apply_demon_ui_css()
+
+    # 画像（任意）
+    img_html = ""
+    if avatar_image:
+        import base64, mimetypes, os
+        if os.path.exists(avatar_image):
+            mime = mimetypes.guess_type(avatar_image)[0] or "image/png"
+            with open(avatar_image, "rb") as f:
+                b64 = base64.b64encode(f.read()).decode()
+            img_html = (
+                "<img class='" + DEFAULT_DEMON_AVATAR + "' src='data:" + mime +
+                ";base64," + b64 + "' alt='" + avatar_alt + "' />"
+            )
+
+    html = (
+        "<div class='" + DEFAULT_DEMON_ROW + "' style='--avatar-size:" + str(avatar_size) + "px'>"
+        + img_html +
+        "<div class='" + DEFAULT_DEMON_BUBBLE + "'>"
+        + html_message +
+        "</div></div>"
+    )
+    st.markdown(html, unsafe_allow_html=True)
