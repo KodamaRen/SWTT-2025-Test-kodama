@@ -62,7 +62,6 @@ def _build_session(team_id: str) -> Session:
     return st.connection(team_id, type="snowflake", max_entries=1).session()
 
 
-@st.cache_resource(ttl=3600)
 def create_session(team_id: str, is_info: bool = True) -> Session:
     try:
         session = _build_session(team_id)
