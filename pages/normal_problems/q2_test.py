@@ -10,8 +10,13 @@ MAX_ATTEMPTS_MAIN = 100
 
 
 def present_quiz(tab_name: str, max_attempts: int) -> str:
+    
+    # セッション状態の初期化（初回のみ）
+    if f"{tab_name}_show_hints" not in st.session_state:
+        st.session_state[f"{tab_name}_show_hints"] = False
+    
     header_animation()
-    st.header(":red[不規則の鬼] 〜法則の呼吸〜", divider="red")
+    st.header("🧩:red[不規則の鬼] 〜法則の呼吸〜", divider="red")
 
     display_problem_statement_swt25(
     """
@@ -26,33 +31,68 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
 
     # 画像ファイルのパス
     image_paths_q = [
-        "pages/normal_problems/resources/q2_test/q2_01.png",
-        "pages/normal_problems/resources/q2_test/q2_02.png",
-        "pages/normal_problems/resources/q2_test/q2_13.png",
-        "pages/normal_problems/resources/q2_test/q2_03.png",
-        "pages/normal_problems/resources/q2_test/q2_04.png"
+        # Document AI
+        "pages/normal_problems/resources/q2_test/icon_document_ai.png",
+        # Iceberg Tables
+        "pages/normal_problems/resources/q2_test/icon_iceberg_tables.png",
+        # ？マーク（Snowpark Containers）
+        "pages/normal_problems/resources/q2_test/icon_question_mark.png",
+        # Snowpark Copilot
+        "pages/normal_problems/resources/q2_test/icon_snowflake_copilot.png",
+        # Tag
+        "pages/normal_problems/resources/q2_test/icon_tag.png"
     ]
 
     # 画像ファイルのパス
     image_paths_a = [
-        "pages/normal_problems/resources/q2_test/q2_05.png",
-        "pages/normal_problems/resources/q2_test/q2_06.png",
-        "pages/normal_problems/resources/q2_test/q2_07.png",
-        "pages/normal_problems/resources/q2_test/q2_08.png",
-        "pages/normal_problems/resources/q2_test/q2_09.png",
-        "pages/normal_problems/resources/q2_test/q2_10.png",
-        "pages/normal_problems/resources/q2_test/q2_11.png",
-        "pages/normal_problems/resources/q2_test/q2_12.png"
+        # Dynamic Tables
+        "pages/normal_problems/resources/q2_test/icon_dynamic_tables.png",
+        # Database
+        "pages/normal_problems/resources/q2_test/icon_database.png",
+        # Role
+        "pages/normal_problems/resources/q2_test/icon_role.png",
+        # Geospatial Analytics
+        "pages/normal_problems/resources/q2_test/icon_geospetial_analytics.png",
+        # Snowpark
+        "pages/normal_problems/resources/q2_test/icon_snowpark.png",
+        # Snowpark Containers
+        "pages/normal_problems/resources/q2_test/icon_snowpark_containers.png",
+        # Streamlit in Snowflake
+        "pages/normal_problems/resources/q2_test/icon_streamlit_in_snowflake.png",
+        # Semi-Structured Data
+        "pages/normal_problems/resources/q2_test/icon_semi-structured_data.png"
     ]
 
-    # 1行×5列で画像を表示
-    cols = st.columns(5)
-    for col_idx, col in enumerate(cols):
-        with col:
-            if os.path.exists(image_paths_q[col_idx]):
-                st.image(image_paths_q[col_idx], width=100)
+    # 1行×9列で画像と矢印を表示（画像5つ、矢印4つ）
+    st.write("問題")
+    cols = st.columns(9)
+    for col_idx in range(9):
+        with cols[col_idx]:
+            if col_idx % 2 == 0:  # 偶数列に画像を表示
+                img_idx = col_idx // 2
+                if img_idx < len(image_paths_q):
+                    if os.path.exists(image_paths_q[img_idx]):
+                        st.markdown("<div style='height:100px; display:flex; align-items:center>", unsafe_allow_html=True)
+                        st.image(image_paths_q[img_idx], width=80)
+                        st.markdown("</div>", unsafe_allow_html=True)
+            else:  # 奇数列に矢印を表示
+                st.markdown("<div style='text-align: center; font-size: 18px; line-height:100px;'>→</div>", unsafe_allow_html=True)
+    
+    # ヒントボタンが押された場合のみ個別ヒントを表示
+    if st.session_state[f"{tab_name}_show_hints"]:
+        # 各画像に対応する異なる文字を表示
+        hint_texts = ["Document AI", "Iceberg Tables", "", "Snowpark Copilot", "Tag"]
+        for i in range(5):
+            cols[i*2].markdown(f"<div style='font-size: 14px; text-align: center; height: 40px'><strong>{hint_texts[i]}</strong></div>", unsafe_allow_html=True)
+        
+        st.write("")
+        
+        st.warning("""💡ヒント: 各アイコンの名称と繋がりに注目してみよう！""")
+
 
     st.write("")  # Add space between containers
+
+    st.write("---")
     
     # 2行×4列で画像を表示
     for row in range(2):
@@ -63,7 +103,9 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
                 with col:
                     st.write(f"{'①②③④⑤⑥⑦⑧'[img_idx]}")  # Updated to include ⑧
                     if os.path.exists(image_paths_a[img_idx]):
-                        st.image(image_paths_a[img_idx], width=100)
+                        st.image(image_paths_a[img_idx], width=120)
+
+    st.write("---")
 
     # 選択ボックスを追加
     selected_number = st.selectbox(
@@ -76,7 +118,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
 
 
 def process_answer(answer: str, state, session: Session) -> None:
-    if answer == "④":
+    if answer == "⑥":
         state["is_clear"] = True
         st.success("正解です！")
     else:
@@ -105,5 +147,11 @@ def run(tab_name: str, session: Session):
                 st.warning("番号を選択してください")
         else:
             process_exceeded_limit(placeholder, state)
+
+    # ヒントボタンの配置
+    if st.button("💡 ヒントを見る", key=f"{tab_name}_hint_button"):
+        # セッション状態でヒント表示フラグを設定
+        st.session_state[f"{tab_name}_show_hints"] = True
+        st.rerun()
 
     clear_submit_button(placeholder, state)
