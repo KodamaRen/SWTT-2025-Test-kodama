@@ -11,7 +11,7 @@ MAX_ATTEMPTS_MAIN = 100
 
 def present_quiz(tab_name: str, max_attempts: int) -> list:
     header_animation()
-    st.header(":red[真偽の鬼] 〜見極めの呼吸〜", divider="red")
+    st.header("🔍️:red[真偽の鬼] 〜見極めの呼吸〜", divider="red")
 
     display_problem_statement_swt25(
     """
@@ -28,8 +28,8 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
     
     with col1:
         st.markdown("""
-        <div style='background-color: #e6f3ff; padding: 20px; border-radius: 10px; border: 2px solid #0066cc'>
-            <h4 style='color: #0066cc; text-align: center'>ある</h4>
+        <div style='background-color: #ffe6e6; padding: 20px; border-radius: 10px; border: 3px solid #cc0000'>
+            <h4 style='color: #cc0000; text-align: center'>ある</h4>
             <ul style='margin-bottom: 0'>
                 <li style='color: #000000'>Cloud Services</li>
                 <li style='color: #000000'>Iceberg Tables</li>
@@ -41,7 +41,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
     
     with col2:
         st.markdown("""
-        <div style='background-color: #fff2e6; padding: 20px; border-radius: 10px; border: 2px solid #ff8533'>
+        <div style='background-color: #ffe0cc; padding: 20px; border-radius: 10px; border: 3px solid #ff8533'>
             <h4 style='color: #ff8533; text-align: center'>なし</h4>
             <ul style='margin-bottom: 0'>
                 <li style='color: #000000'>Data Warehouse</li>
@@ -54,11 +54,12 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
 
     st.write("---")
     
-    st.write("##### 以下の項目について「ある」「なし」のどちらに属するか選んでください:")
+    st.write("以下の項目が「ある」「なし」のどちらに属するか選択してください")
     # st.write(f"回答回数の上限は {max_attempts}回です。")
 
+
     options = [
-        "Snowpark Container Service",
+        "Snowpark Container Services",
         "Data Lake", 
         "Data Mart",
         "Star Schema",
@@ -66,12 +67,11 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
         "Retrieval Augmented Generation"
     ]
 
+    # 選択状態を保持するためのsession_stateを初期化
     if "selected_options" not in st.session_state:
+        # 選択肢ごとの状態を格納する辞書を作成
         st.session_state.selected_options = {}
-        for option in options:
-            st.session_state.selected_options[option] = None
-
-    selected_options = []
+        st.session_state.selected_options = {option: None for option in options}
 
     for option in options:
         cols = st.columns([1, 2, 1, 1])
@@ -80,36 +80,45 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
             st.write(option)
             
         with cols[0]:
+            # 「ある」ボタン
+            # session_stateから現在の選択状態を取得
+            current_value = st.session_state.selected_options.get(option, None)
+            # 選択状態に応じてボタンの見た目を変更（選択中はprimary、未選択はsecondary）
             if st.button("ある", key=f"button_{option}_left", 
-                type="primary" if st.session_state.selected_options[option] == "ある" else "secondary"):
+                type="primary" if current_value == "ある" else "secondary"):
+                # 「ある」を選択状態として保存
                 st.session_state.selected_options[option] = "ある"
-                if option not in selected_options:
-                    selected_options.append(option)
                 st.rerun()
                 
         with cols[2]:
+            # 「なし」ボタン
+            # session_stateから現在の選択状態を取得
+            current_value = st.session_state.selected_options.get(option, None)
+            # 選択状態に応じてボタンの見た目を変更（選択中はprimary、未選択はsecondary）
             if st.button("なし", key=f"button_{option}_right",
-                type="primary" if st.session_state.selected_options[option] == "なし" else "secondary"):
+                type="primary" if current_value == "なし" else "secondary"):
+                # 「なし」を選択状態として保存
                 st.session_state.selected_options[option] = "なし"
-                if option in selected_options:
-                    selected_options.remove(option)
                 st.rerun()
 
+    # 選択されたオプションをリストとして返す
+    selected_options = []
+    for option, value in st.session_state.selected_options.items():
+        if value == "ある":
+            selected_options.append(option)
+    
     return selected_options
 
 
 def process_answer(answer: list, state, session: Session) -> None:
-    correct_answers_exist = ["Snowpark Container Service", "Data Lake", "Star Schema"]
+    correct_answers_exist = ["Snowpark Container Services", "Data Lake", "Star Schema"]
     correct_answers_not_exist = ["Data Mart", "Openflow", "Retrieval Augmented Generation"]
     
     # Get all options from session state
     all_options = list(st.session_state.selected_options.keys())
-    print(all_options)
     
     selected_exist = [opt for opt in all_options if st.session_state.selected_options[opt] == "ある"]
     selected_not_exist = [opt for opt in all_options if st.session_state.selected_options[opt] == "なし"]
-    print(selected_exist)
-    print(selected_not_exist)
 
     if (sorted(selected_exist) == sorted(correct_answers_exist) and 
         sorted(selected_not_exist) == sorted(correct_answers_not_exist)):
@@ -143,5 +152,13 @@ def run(tab_name: str, session: Session):
                 process_answer(answer, state, session)
         else:
             process_exceeded_limit(placeholder, state)
+
+    st.write("---")
+
+    if state["is_clear"]:
+        st.warning("☝️解説：あるの方は、「Snow」や「Lake」など、自然に関連する単語が含まれています。")
+    else:
+        with st.expander("💡ヒントを見る"):
+            st.warning("💡ヒント：「Ice」や「Horizon」といった単語に注目してみましょう！")
 
     clear_submit_button(placeholder, state)
