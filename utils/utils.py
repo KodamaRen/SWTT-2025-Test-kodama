@@ -74,6 +74,7 @@ def create_session(team_id: str, is_info: bool = True) -> Session:
     except SnowparkSQLException as e:
         print("セッションの有効期限切れエラーが発生しました。")
         print("セッションの再作成を試みます。")
+        st.connection(team_id, type="snowflake", max_entries=1).reset()
         _build_session.clear()
         session = _build_session(team_id)
         session.sql("SELECT 1").collect()
