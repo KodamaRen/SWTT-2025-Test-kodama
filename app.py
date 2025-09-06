@@ -36,7 +36,7 @@ message = """
 """
 
 display_applied_message(message, css_name)
-background_image("pages/common/images/sky.png", dark_mode=False)
+background_image("pages/common/images/background-main_01.png", dark_mode=False)
 
 st.write("")
 team_id = st.selectbox(

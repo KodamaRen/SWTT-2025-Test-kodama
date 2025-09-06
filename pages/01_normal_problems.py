@@ -28,7 +28,7 @@ from utils.attempt_limiter import check_is_failed, update_failed_status
 display_page_titles_sidebar()
 
 st.title("⚔️柱の試練")
-background_image("pages/common/images/wars.png")
+background_image("pages/common/images/background-quest_01.png")
 
 team_id = get_team_id()
 if f"{team_id}_display_preparation_message" not in st.session_state:
