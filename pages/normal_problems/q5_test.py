@@ -81,7 +81,7 @@ def process_answer(answers: list, state: dict, session: Session):
         elif is_correct2:
             st.error("**討伐失敗！** 問題2は正解です！問題1の答えをもう一度考えてみましょう。")
         
-        st.info("💡ヒント: Snowflakeコミュニティ「SnowVillage」を見てみよう！")
+        st.warning("💡ヒント: Snowflakeコミュニティ「SnowVillage」を見てみよう！")
 
     save_table(state, session)
 
