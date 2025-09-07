@@ -11,14 +11,14 @@ MAX_ATTEMPTS_MAIN = 100
 
 def present_quiz(tab_name: str, max_attempts: int) -> str:
     header_animation()
-    st.header(":red[過去忘却の鬼] 〜歴史の呼吸〜", divider="red")
+    st.header("⌛️:red[過去忘却の鬼] 〜歴史の呼吸〜", divider="red")
 
     display_problem_statement_swt25(
     """
     <i>"時は流れ、記憶は薄れゆく。だが、真実は常に一つの道筋を持つもの。
     過去を正しく紡ぐことで、未来への扉は開かれる。"</i><br/><br/>
 
-    時の流れの中で散り散りになってしまったSnowflakeの設定画面の記憶。<br/>
+    時の流れの中で散り散りになってしまったSnowsight UIの記憶。<br/>
     これらの断片を、最も古いものから順に並べ直し、歴史の真実を取り戻せ。
     """
     )
@@ -33,25 +33,27 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
         "pages/normal_problems/resources/q1_test/q1_04.png"
     ]
     
-    # 画像の番号（①、②、③、④）
-    image_numbers = ["①", "②", "③", "④"]
+    # 画像の番号（A、B、C、D）
+    image_numbers = ["A", "B", "C", "D"]
     
     # 画像を表示
-    st.write("#### 記憶の断片:")
+    st.write("#### 記憶の断片")
     
     # 最初の3つの画像を横並びで表示
     cols = st.columns(3)
     for i, (col, img_path, number) in enumerate(zip(cols, image_paths[:3], image_numbers[:3])):
         with col:
             if os.path.exists(img_path):
-                st.image(img_path, caption=f"画像{number}", use_container_width=True)
+                st.markdown(f"**{number}**")
+                st.image(img_path, width=200)
     
     # 4つ目の画像を下に表示
     if os.path.exists(image_paths[3]):
-        st.image(image_paths[3], caption=f"画像{image_numbers[3]}", width=700)
+        st.markdown(f"**{image_numbers[3]}**")    
+        st.image(image_paths[3], width=700)
     
     st.write("---")
-    st.write("#### 歴史の真実を復元せよ:")
+    st.write("#### 歴史の真実を復元せよ")
     
     # コンテナを作成
     cols = st.columns(4)
@@ -60,7 +62,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
     for i, col in enumerate(cols):
         with col:
             selected = st.selectbox(
-                f"時系列の順番 {i+1}",
+                f"{i+1}番目",
                 options=image_numbers,
                 key=f"{tab_name}_image_{i}"
             )
@@ -70,7 +72,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
 
 
 def process_answer(answer: list, state, session: Session) -> None:
-    correct_order = ["①", "③", "④", "②"]
+    correct_order = ["D", "A", "B", "C"]
     
     if answer == correct_order:
         state["is_clear"] = True
