@@ -6,6 +6,10 @@ from typing import Dict, Any, List, Optional
 import os
 import time
 
+from utils.utils import save_table, init_state, clear_submit_button
+from utils.attempt_limiter import check_is_failed, init_attempt, process_exceeded_limit
+from utils.designs import header_animation, display_problem_statement_swt25
+
 MAX_ATTEMPTS_MAIN = 100
 MAX_HINTS = 2
 
@@ -15,83 +19,10 @@ SCHEMA = "CORTEX_ANALYST_DEMO"
 STAGE = "RAW_DATA"
 FILE = "semantic_model_J_CI_FD20.yaml"
 
-# === ユーティリティ関数（utilsモジュールの代替） ===
-
-def header_animation():
-    """ヘッダーアニメーション"""
-    placeholder = st.empty()
-    for i in range(3):
-        placeholder.markdown(f"{'🔥' * (i+1)}")
-        time.sleep(0.1)
-    placeholder.empty()
-
-def display_problem_statement_swt25(text: str):
-    """問題文を表示"""
-    st.markdown(
-        f"""
-        <div style="background-color: #787c80; padding: 20px; border-radius: 10px; border-left: 5px solid #4169e1;">
-            <i>"序列に隠された真実への道標。<br/>
-その位置を正確に見抜くことで、データの扉は開かれる。"</i><br/><br/>
-
-2020年国勢調査が記した47都道府県の人口序列。<br/>
-上位でも下位でもない、ちょうど20番目という絶妙な位置に存在する地域。<br/>
-その名を突き止めよ。<br/><br/>
-
-<b>ヒント：Cortex Analystの刀に2回まで質問可能。データを賢く分析し、答えを導き出せ。</b>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-def init_state(tab_name: str) -> Dict:
-    """状態を初期化"""
-    if f'{tab_name}_state' not in st.session_state:
-        st.session_state[f'{tab_name}_state'] = {
-            'tab_name': tab_name,
-            'is_clear': False,
-            'attempts': 0
-        }
-    return st.session_state[f'{tab_name}_state']
-
-def save_state(state: Dict):
-    """状態を保存"""
-    tab_name = state.get('tab_name', 'q6_test')
-    st.session_state[f'{tab_name}_state'] = state
 
 # === Snowflake接続関数 ===
-
-def get_snowflake_connection():
-    """Snowflake接続を取得（ローカル/Streamlit Cloud両対応）"""
-    try:
-        # Streamlit Secretsから接続
-        if hasattr(st, 'secrets') and 'snowflake' in st.secrets:
-            return snowflake.connector.connect(
-                user=st.secrets.snowflake.user,
-                password=st.secrets.snowflake.password,
-                account=st.secrets.snowflake.account,
-                host=st.secrets.snowflake.get('host', 'FSUOFLI-SQ50969.snowflakecomputing.com'),
-                port=st.secrets.snowflake.get('port', 443),
-                warehouse=st.secrets.snowflake.get('warehouse', 'COMPUTE_WH'),
-                role=st.secrets.snowflake.get('role', 'ACCOUNTADMIN'),
-                database=DATABASE,
-                schema=SCHEMA
-            )
-        # 環境変数から接続
-        else:
-            return snowflake.connector.connect(
-                user=os.getenv('SNOWFLAKE_USER'),
-                password=os.getenv('SNOWFLAKE_PASSWORD'),
-                account=os.getenv('SNOWFLAKE_ACCOUNT'),
-                host=os.getenv('SNOWFLAKE_HOST', 'FSUOFLI-SQ50969.snowflakecomputing.com'),
-                port=int(os.getenv('SNOWFLAKE_PORT', '443')),
-                warehouse=os.getenv('SNOWFLAKE_WAREHOUSE', 'COMPUTE_WH'),
-                role=os.getenv('SNOWFLAKE_ROLE', 'ACCOUNTADMIN'),
-                database=DATABASE,
-                schema=SCHEMA
-            )
-    except Exception as e:
-        st.error(f"Snowflake接続エラー: {str(e)}")
-        return None
+def build_connector(session):
+    return session.connection
 
 # === Cortex Analyst関連関数 ===
 
@@ -151,21 +82,14 @@ def display_cortex_content(content: List[Dict[str, str]], connector) -> None:
                     st.error(f"SQL実行エラー: {str(e)}")
 
 # === メイン関数 ===
-
-def present_quiz(tab_name: str = "q6_test") -> str:
+def present_quiz(tab_name: str = "q6_test", connector=None) -> str:
     """クイズ問題を表示"""
-    
-    # Snowflake接続を取得
-    if 'snowflake_conn' not in st.session_state or st.session_state.snowflake_conn is None:
-        st.session_state.snowflake_conn = get_snowflake_connection()
-    
-    connector = st.session_state.snowflake_conn
     
     header_animation()
     st.header(":blue[人口統計の鬼] 〜データ分析の呼吸〜", divider="blue")
     
     display_problem_statement_swt25(
-    """
+    f"""
     <i>"序列に隠された真実への道標。<br/>
 その位置を正確に見抜くことで、データの扉は開かれる。"</i><br/><br/>
 
@@ -173,7 +97,7 @@ def present_quiz(tab_name: str = "q6_test") -> str:
 上位でも下位でもない、ちょうど20番目という絶妙な位置に存在する地域。<br/>
 その名を突き止めよ。<br/><br/>
 
-<b>ヒント：Cortex Analystの刀に2回まで質問可能。データを賢く分析し、答えを導き出せ。</b>
+<b>ヒント：Cortex Analystの刀に{MAX_HINTS}回まで質問可能。データを賢く分析し、答えを導き出せ。</b>
     """
     )
     
@@ -270,7 +194,7 @@ def present_quiz(tab_name: str = "q6_test") -> str:
     
     return answer
 
-def process_answer(answer: str, state: Dict) -> None:
+def process_answer(answer: str, state: Dict, session) -> None:
     """回答を処理"""
     correct_answer = "岡山県"
     
@@ -293,30 +217,28 @@ def process_answer(answer: str, state: Dict) -> None:
     else:
         st.warning("回答を入力してください")
     
-    save_state(state)
+    save_table(state, session)
 
-def run(tab_name: str = "q6_test"):
+def run(tab_name: str = "q6_test", session = None):
     """メイン実行関数（スタンドアロン版）"""
-    state = init_state(tab_name)
+    state = init_state(tab_name, session, MAX_ATTEMPTS_MAIN)
+    main_attempt = init_attempt(
+        max_attempts=MAX_ATTEMPTS_MAIN, tab_name=tab_name, session=session, key="main"
+    )
     
-    answer = present_quiz(tab_name)
+    connector = build_connector(session)
+    answer = present_quiz(tab_name, connector)
     
-    # 試行回数のチェック
-    if state.get('attempts', 0) >= MAX_ATTEMPTS_MAIN:
-        st.error(f"試行回数が上限（{MAX_ATTEMPTS_MAIN}回）に達しました。")
-        if st.button("リセット", key=f"{tab_name}_reset"):
-            state['attempts'] = 0
-            state['is_clear'] = False
-            save_state(state)
-            st.rerun()
-    else:
-        if st.button("討伐開始", key=f"{tab_name}_submit", type="primary"):
-            process_answer(answer, state)
-            st.rerun()
-        
-        # 状態表示
-        if state.get('is_clear', False):
-            st.success("クリア済み！")
+    placeholder = st.empty()
+    if check_is_failed(session, state):
+        process_exceeded_limit(placeholder, state)
+    elif placeholder.button("Answer", key=f"{tab_name}_submit"):
+        if main_attempt.check_attempt():
+                process_answer(answer, state, session)
+        else:
+            process_exceeded_limit(placeholder, state)
+
+    clear_submit_button(placeholder, state)
 
 # === エントリーポイント ===
 
