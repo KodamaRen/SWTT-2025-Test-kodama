@@ -16,6 +16,7 @@ TAB_TITLES = {
     "q3_test": "🧭混迷の鬼 ~ 判別の呼吸 ~",
     "q4_test": "🔍️真偽の鬼 ~ 見極めの呼吸 ~",
     "q5_test": "🌊波紋の鬼 ~ コミュニティの呼吸 ~",
+    "q6_test": "📊分析の鬼 ~ データ分析の呼吸 ~",
 }
 
 DEMON_NAME = {
@@ -24,6 +25,7 @@ DEMON_NAME = {
     "q3_test": "混迷の鬼",
     "q4_test": "真偽の鬼",
     "q5_test": "波紋の鬼",
+    "q6_test": "分析の鬼",
 }
 
 # Key: 表示されるチーム名
@@ -60,9 +62,25 @@ TEAMS = {
 
 
 @st.cache_resource(ttl=3600)
+def _build_session(team_id: str) -> Session:
+    secret = st.secrets["connections"][team_id]
+    config = {
+        "account":  secret["account"],
+        "user":     secret["user"],
+        "password": secret["password"],
+        "role":     secret.get("role"),
+        "warehouse":secret.get("warehouse"),
+        "database": secret.get("database"),
+        "schema":   secret.get("schema"),
+    }
+    session = Session.builder.configs(config).create()
+    session.sql("SELECT 1").collect()
+    return session
+
+
 def create_session(team_id: str, is_info: bool = True) -> Session:
     try:
-        session = st.connection(team_id, type="snowflake", max_entries=1).session()
+        session = _build_session(team_id)
         session.sql("SELECT 1").collect()
         print("セッションの作成に成功しました。")
         if is_info:
@@ -70,10 +88,10 @@ def create_session(team_id: str, is_info: bool = True) -> Session:
         return session
 
     except SnowparkSQLException as e:
-        print(e)
         print("セッションの有効期限切れエラーが発生しました。")
         print("セッションの再作成を試みます。")
-        session = st.connection(team_id, type="snowflake", max_entries=1).session()
+        _build_session.clear()
+        session = _build_session(team_id)
         session.sql("SELECT 1").collect()
         print("セッションの再作成に成功しました。")
         if is_info:
