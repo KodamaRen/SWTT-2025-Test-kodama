@@ -46,11 +46,6 @@ def present_quiz(tab_name: str) -> list:
                 """,
                 unsafe_allow_html=True
             )
-    
-<<<<<<< HEAD
-    # st.write(f"**討伐回数制限**: {max_attempts}回まで")
-=======
->>>>>>> bc9c4f1 (基礎問題の作成)
 
     options = [
         # Japanese Store Data Master　　店舗マスター

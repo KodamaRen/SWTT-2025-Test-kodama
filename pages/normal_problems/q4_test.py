@@ -78,14 +78,7 @@ def present_quiz(tab_name: str) -> list:
         """, unsafe_allow_html=True)
 
     st.write("---")
-    
-<<<<<<< HEAD
-    st.write("以下の項目が「ある」「なし」のどちらに属するか選択してください")
-    # st.write(f"回答回数の上限は {max_attempts}回です。")
-
-=======
     st.write("##### 以下の項目について「ある」「なし」のどちらに属するか選んでください:")
->>>>>>> bc9c4f1 (基礎問題の作成)
 
     options = [
         "Snowpark Container Services",

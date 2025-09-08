@@ -105,13 +105,9 @@ def present_quiz(tab_name: str) -> str:
                 with col:
                     st.write(f"{'①②③④⑤⑥⑦⑧'[img_idx]}")  # Updated to include ⑧
                     if os.path.exists(image_paths_a[img_idx]):
-<<<<<<< HEAD
-                        st.image(image_paths_a[img_idx], width=120)
+                        st.image(image_paths_a[img_idx], width=80)
 
     st.write("---")
-=======
-                        st.image(image_paths_a[img_idx], width=80)
->>>>>>> bc9c4f1 (基礎問題の作成)
 
     # 選択ボックスを追加
     selected_number = st.selectbox(
