@@ -26,7 +26,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
 
     options = [
         # Japanese Store Data Master　　店舗マスター
-        "全国小売チェーン（SM、CVS、HC/DS、DRUG）の位置情報付き店舗データベース",
+        "約120万件の商品コードと豊富な属性情報を網羅する、消費財特化の商品データベース",
         # Prepper Open Data Bank - Japanese City Data
         "日本の市区町村データ（人口、家計経済状況、住宅・土地、インフラ、...）",
         # Stock Master File
@@ -50,7 +50,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
 
 def process_answer(answer: list, state, session: Session) -> None:
     correct_answers = [
-        "全国小売チェーン（SM、CVS、HC/DS、DRUG）の位置情報付き店舗データベース",
+        "約120万件の商品コードと豊富な属性情報を網羅する、消費財特化の商品データベース",
         "日本の市区町村データ（人口、家計経済状況、住宅・土地、インフラ、...）",
         "日本国内上場株式の銘柄属性情報",
         "日本最大の気象観測網や全国のユーザーから寄せられる天気・体感情報",
@@ -96,8 +96,9 @@ def run(tab_name: str, session: Session):
         
         Snowflake Marketplaceでは、様々なデータセットが提供されています:
 
-        1. **Japanese Store Data Master - INTAGE Inc. 株式会社インテージ**  
-           全国の小売店舗の位置情報と属性データを提供
+        1. **Japanese Product Master 商品マスター - INTAGE Inc. 株式会社インテージ**  
+           約120万件の商品コードと約3万1千社の国内主要メーカー情報を網羅。  
+           食品、日用品、OTC医薬品など多岐に渡るカテゴリを約330分目に分類
 
         2. **Prepper Open Data Bank - truestar inc.**  
            日本の市区町村の詳細な統計データを提供
