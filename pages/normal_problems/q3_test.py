@@ -3,26 +3,49 @@ import os
 from snowflake.snowpark import Session
 
 from utils.utils import save_table, init_state, clear_submit_button
-from utils.attempt_limiter import check_is_failed, init_attempt, process_exceeded_limit
 from utils.designs import header_animation, display_problem_statement_swt25
 
-MAX_ATTEMPTS_MAIN = 100
 
 
-def present_quiz(tab_name: str, max_attempts: int) -> list:
+def present_quiz(tab_name: str) -> list:
     header_animation()
     st.header("🧭:red[混迷の鬼] 〜判別の呼吸〜", divider="red")
 
-    display_problem_statement_swt25(
-    """
-    <i>"混沌たる情報の海に、真の宝は埋もれている。
-    その本質を見抜き、宝を手にする術を会得せよ。"</i><br/><br/>
-
-    数あるデータの中から、Snowflake Marketplaceで提供されているデータはどれか。<br/>
-    """
-    )
+    # Problem statement and demon image side by side
+    col1, col2 = st.columns([2, 1])
     
-    # st.write(f"**討伐回数制限**: {max_attempts}回まで")
+    with col1:
+        display_problem_statement_swt25(
+        """
+        <i>"混沌たる情報の海に、真の宝は埋もれている。
+        その本質を見抜き、宝を手にする術を会得せよ。"</i><br/><br/>
+
+        数あるデータの中から、Snowflake Marketplaceで提供されているデータはどれか。<br/>
+        """
+        )
+    
+    with col2:
+        # Demon image display with vertical centering
+        demon_image_path = "pages/common/images/demons/demon3.jpg"
+        try:
+            # Use markdown with CSS for vertical centering
+            st.markdown(
+                """
+                <div style="display: flex; align-items: center; height: 100%; justify-content: center;">
+                """,
+                unsafe_allow_html=True
+            )
+            st.image(demon_image_path, caption="混迷の鬼", use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+        except Exception:
+            st.markdown(
+                """
+                <div style="display: flex; align-items: center; height: 100%; justify-content: center;">
+                    <p style="text-align: center;">📷 鬼の姿を撮影中...</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     options = [
         # Japanese Store Data Master　　店舗マスター
@@ -68,25 +91,16 @@ def process_answer(answer: list, state, session: Session) -> None:
 
 
 def run(tab_name: str, session: Session):
-    state = init_state(tab_name, session, MAX_ATTEMPTS_MAIN)
-    main_attempt = init_attempt(
-        max_attempts=MAX_ATTEMPTS_MAIN, tab_name=tab_name, session=session, key="main"
-    )
+    state = init_state(tab_name, session)
 
-    answer = present_quiz(tab_name, MAX_ATTEMPTS_MAIN)
+    answer = present_quiz(tab_name)
 
     placeholder = st.empty()
-    if check_is_failed(session, state):
-        process_exceeded_limit(placeholder, state)
-    elif placeholder.button("Answer", key=f"{tab_name}_submit"):
-        if main_attempt.check_attempt():
-            if answer:
-                process_answer(answer, state, session)
-            else:
-                st.warning("選択してください")
-
+    if placeholder.button("Answer", key=f"{tab_name}_submit"):
+        if answer:
+            process_answer(answer, state, session)
         else:
-            process_exceeded_limit(placeholder, state)
+            st.warning("選択してください")
 
     clear_submit_button(placeholder, state)
 
