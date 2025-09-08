@@ -27,7 +27,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
 
     with col1:
         st.write("#### 問題1")
-        st.write("2025年9月4日時点でのSnowflakeコミュニティ（日本）の参加者数は何人でしょうか？")
+        st.write("SnowVillage（日本のSnowflakeコミュニティ）の参加者数は何人でしょうか？")
 
         options1 = [
             "約700人", 
@@ -41,14 +41,14 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
 
     with col2:
         st.write("#### 問題2") 
-        st.write("検討中: コミュニティグループ系問題？チラシとか見て分かる問題？")
+        st.write("SnowVillageのSlackが立ち上がったのはいつでしょうか？")
 
         options2 = [
-            "Answer01",
-            "Answer02", 
-            "Answer03",
-            "Answer04",
-            "Answer05"
+            "2020年9月",
+            "2021年9月", 
+            "2022年9月",
+            "2023年9月",
+            "2024年9月"
         ]
 
         answer2 = st.radio("選択肢:", options2, key=f"{tab_name}_answer2")
@@ -59,7 +59,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> list:
 def process_answer(answers: list, state: dict, session: Session):
     # 正解の設定
     correct_answer1 = "約1,900人"
-    correct_answer2 = "Answer01"
+    correct_answer2 = "2020年9月"
     
     is_correct1 = answers[0] == correct_answer1
     is_correct2 = answers[1] == correct_answer2
@@ -67,12 +67,7 @@ def process_answer(answers: list, state: dict, session: Session):
     if is_correct1 and is_correct2:
         state["is_clear"] = True
         st.success("**討伐成功！** 雷の速さで正確な数字を見抜いた！")
-        st.balloons()
-        st.write("""
-        **解説**: 
-        - 2025年9月時点で、Snowflakeコミュニティ（日本）の参加者数は約1,900人程度です。
-        - 日本国内にはxxのユーザーグループが存在し、各地域で定期的な勉強会やミートアップを開催しています。
-        """)
+
     else:
         state["is_clear"] = False
         
@@ -102,5 +97,20 @@ def run(tab_name: str, session: Session):
                 process_answer(answers, state, session)
         else:
             process_exceeded_limit(placeholder, state)
+
+        st.write("---")
+
+    if state["is_clear"]:
+        st.warning("""
+        ☝️解説
+        - **2025年9月時点で、SnowVillageの参加者数は約1,900人です。**
+        - **SnowVillageのSlackが立ち上がったのは2020年9月で、先日5周年を迎えました。**
+        """)
+
+        st.info("""
+        ❄️SnowVillage
+        - SnowVillageは、データ、AI、アプリケーションのプラットフォームである「Snowflake」に興味を持つ人々が集い、共に学び、成長するコミュニティです。
+        - SnowVillageではSnowflakeに興味があり、学び、みんなで情報交換して助けたいと考えているすべての方々を歓迎しています。お気軽に参加下さい！
+        """)
 
     clear_submit_button(placeholder, state)
