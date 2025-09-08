@@ -72,7 +72,7 @@ def present_quiz(tab_name: str, max_attempts: int) -> str:
 
 
 def process_answer(answer: list, state, session: Session) -> None:
-    correct_order = ["D", "A", "B", "C"]
+    correct_order = ["D", "B", "C", "A"]
     
     if answer == correct_order:
         state["is_clear"] = True
