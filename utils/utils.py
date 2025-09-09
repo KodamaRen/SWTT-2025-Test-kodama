@@ -32,8 +32,6 @@ DEMON_NAME = {
 # Value: secretsに記載されているチームID
 TEAMS = {
     "": "",
-    "Kodama": "KODAMA",
-    "hiyama_test": "hiyama_test",
     "一月上旬生まれ": "Jan_First",
     "一月下旬生まれ": "Jan_Second",
     "二月上旬生まれ": "Feb_First",
