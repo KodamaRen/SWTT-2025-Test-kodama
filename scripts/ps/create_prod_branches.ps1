@@ -1,7 +1,15 @@
 git checkout main
 git pull origin main
 
-$branches = @("prodab", "prodcd", "prodef", "prodgh", "prodij", "prodkl", "prodmn", "prodop", "prodqr", "prodst", "produv", "prodwx")
+$months = @("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
+$suffixes = @("a", "b")
+$branches = @()
+
+foreach ($month in $months) {
+    foreach ($suffix in $suffixes) {
+        $branches += "test/$month-$suffix"
+    }
+}
 
 # 各ブランチを作成してmainの内容を反映させ、リモートにプッシュ
 foreach ($branch in $branches) {
