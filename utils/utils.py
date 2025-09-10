@@ -16,7 +16,7 @@ TAB_TITLES = {
     "q3_test": "🧭混迷の鬼 ~ 判別の呼吸 ~",
     "q4_test": "🔍️真偽の鬼 ~ 見極めの呼吸 ~",
     "q5_test": "🌊波紋の鬼 ~ コミュニティの呼吸 ~",
-    "q6_test": "📊分析の鬼 ~ データ分析の呼吸 ~",
+    "q6_test": "📊分析の鬼 ~ 言葉の呼吸 ~",
 }
 
 DEMON_NAME = {
@@ -32,8 +32,6 @@ DEMON_NAME = {
 # Value: secretsに記載されているチームID
 TEAMS = {
     "": "",
-    "Kodama": "KODAMA",
-    "hiyama_test": "hiyama_test",
     "一月上旬生まれ": "Jan_First",
     "一月下旬生まれ": "Jan_Second",
     "二月上旬生まれ": "Feb_First",
