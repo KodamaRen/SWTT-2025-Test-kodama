@@ -32,7 +32,7 @@ with st.sidebar:
     display_on_pc = st.toggle("文字サイズ：大")
 
 css_name = apply_default_custom_css()
-message = "ここでは、現在の各討伐隊の挑戦状況を確認できるぞ。\n\nそなたらもどんどん挑戦して進むのだ！"
+message = "ここでは、現在の各討伐隊の挑戦状況を確認できるんだ。\n\n君達もどんどん挑戦して進んでね！"
 display_applied_message(message, css_name)
 st.write("")
 
@@ -44,8 +44,8 @@ session = st.session_state.snow_session
 try:
     problem_ids = st.session_state.problem_ids
 except AttributeError as e:
-    st.warning("一度挑戦の場を訪れるが良い。")
-    if st.button("挑戦の場に行く"):
+    st.warning("一回、柱の試練に行ってから来てみて！")
+    if st.button("柱の試練に行く"):
         st.switch_page("pages/01_normal_problems.py")
     st.stop()
 
@@ -110,7 +110,7 @@ def update_chart():
         fig.update_layout(height=600, width=1000)
 
         fig.update_layout(
-            xaxis_range=[-0.5, 7.5],
+            xaxis_range=[-0.5, 5.5],
             yaxis_range=[0, 25],
             plot_bgcolor="rgba(30, 30, 30, 0.7)",
             paper_bgcolor="rgba(10, 10, 10, 0.5)",
@@ -119,7 +119,7 @@ def update_chart():
 
     else:
         fig.update_layout(
-            xaxis_range=[-0.5, 7.5],
+            xaxis_range=[-0.5, 5.5],
             yaxis_range=[0, 25],
             plot_bgcolor="rgba(30, 30, 30, 0.7)",
             paper_bgcolor="rgba(10, 10, 10, 0.5)",
@@ -128,7 +128,7 @@ def update_chart():
     fig.add_shape(
         type="line",
         x0=-0.5,
-        x1=7.5,
+        x1=5.5,
         y0=CLEAR_COUNT,
         y1=CLEAR_COUNT,
         line=dict(color="#ff4b4b", width=3),

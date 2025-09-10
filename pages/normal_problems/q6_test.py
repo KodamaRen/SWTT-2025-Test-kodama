@@ -86,16 +86,15 @@ def present_quiz(tab_name: str = "q6_test", connector=None) -> str:
     """クイズ問題を表示"""
     
     header_animation()
-    st.header(":blue[人口統計の鬼] 〜データ分析の呼吸〜", divider="blue")
+    st.header(":blue[分析の鬼] 〜言葉の呼吸〜", divider="blue")
     
     display_problem_statement_swt25(
     f"""
     <i>"序列に隠された真実への道標。<br/>
 その位置を正確に見抜くことで、データの扉は開かれる。"</i><br/><br/>
 
-2020年国勢調査が記した47都道府県の人口序列。<br/>
-上位でも下位でもない、ちょうど20番目という絶妙な位置に存在する地域。<br/>
-その名を突き止めよ。<br/><br/>
+2020年国勢調査が記した47都道府県の人口順位。<br/>
+ちょうど20番目に存在する地域。その名を突き止めよ。<br/><br/>
 
 <b>ヒント：Cortex Analystの刀に{MAX_HINTS}回まで質問可能。データを賢く分析し、答えを導き出せ。</b>
     """
@@ -204,7 +203,7 @@ def process_answer(answer: str, state: Dict, session) -> None:
         if answer.strip() == correct_answer:
             state["is_clear"] = True
             st.balloons()
-            st.success(f"**討伐成功！** 正解は{correct_answer}でした！データ分析の鬼を撃破した！")
+            st.success(f"**討伐成功！** 正解は{correct_answer}でした！分析の鬼を撃破した！")
         else:
             state["is_clear"] = False
             st.error(f"**討伐失敗！** 「{answer}」は不正解... 鬼に惑わされた。")
@@ -244,7 +243,7 @@ def run(tab_name: str = "q6_test", session = None):
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="人口統計の鬼",
+        page_title="分析の鬼",
         page_icon="🗾",
         layout="wide"
     )
